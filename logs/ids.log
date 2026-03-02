@@ -1,0 +1,12 @@
+2026-02-28 11:45:46 | source_ip=127.0.0.1 | rf_decision=Normal rf_confidence=0.95 | if_decision=Normal | agreement=True | final_verdict=Normal severity=LOW
+2026-02-28 11:46:22 | source_ip=127.0.0.1 | rf_decision=Normal rf_confidence=0.95 | if_decision=Normal | agreement=True | final_verdict=Normal severity=LOW
+2026-02-28 11:46:39 | source_ip=127.0.0.1 | rf_decision=Normal rf_confidence=0.93 | if_decision=Anomalous | agreement=False | final_verdict=Suspicious severity=MEDIUM
+2026-02-28 11:46:56 | source_ip=127.0.0.1 | rf_decision=Attack rf_confidence=0.87 | if_decision=Anomalous | agreement=True | final_verdict=Attack severity=CRITICAL
+2026-02-28 16:36:01 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.710 if_decision=Normal agreement=yes final_verdict=Normal severity=LOW suspicious_count=0 ip_blocked=False
+2026-03-01 20:13:46 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.710 if_decision=Normal agreement=yes final_verdict=Normal severity=LOW suspicious_count=0 ip_blocked=False
+2026-03-01 20:14:20 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.710 if_decision=Normal agreement=yes final_verdict=Normal severity=LOW suspicious_count=0 ip_blocked=False
+2026-03-01 20:15:10 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.710 if_decision=Normal agreement=yes final_verdict=Normal severity=LOW suspicious_count=0 ip_blocked=False
+2026-03-01 20:24:26 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.710 if_decision=Normal agreement=yes final_verdict=Normal severity=LOW suspicious_count=0 ip_blocked=False
+2026-03-01 20:36:02 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.710 if_decision=Normal agreement=yes final_verdict=Normal severity=LOW suspicious_count=0 ip_blocked=False
+2026-03-01 20:38:57 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.710 if_decision=Normal agreement=yes final_verdict=Normal severity=LOW suspicious_count=0 ip_blocked=False
+2026-03-02 11:09:04 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.710 if_decision=Normal agreement=yes final_verdict=Normal severity=LOW suspicious_count=0 ip_blocked=False

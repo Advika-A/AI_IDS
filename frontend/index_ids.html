@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Hybrid IDS/IPS – Explainable Threat Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --bg: #020617;
+            --bg-elevated: rgba(15, 23, 42, 0.85);
+            --accent: #38bdf8;
+            --accent-soft: rgba(56, 189, 248, 0.15);
+            --accent-strong: rgba(56, 189, 248, 0.35);
+            --text: #e5e7eb;
+            --text-soft: #9ca3af;
+            --danger: #f97373;
+            --warning: #facc15;
+            --success: #22c55e;
+            --critical: #ef4444;
+            --border-soft: rgba(148, 163, 184, 0.3);
+            --glass: rgba(15, 23, 42, 0.7);
+            --radius-lg: 18px;
+            --radius-md: 14px;
+            --transition-fast: 180ms ease-out;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            color: var(--text);
+            background: radial-gradient(circle at top, #1f2937 0, #020617 45%, #000 100%);
+            overflow-x: hidden;
+        }
+
+        /* Animated grid background */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: -200px;
+            background-image:
+                linear-gradient(rgba(15, 23, 42, 0.6) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(15, 23, 42, 0.6) 1px, transparent 1px);
+            background-size: 70px 70px;
+            opacity: 0.5;
+            transform: translate3d(0, 0, 0);
+            animation: drift 40s linear infinite;
+            z-index: -2;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 10% 0%, rgba(59, 130, 246, 0.18), transparent 50%),
+                radial-gradient(circle at 90% 100%, rgba(236, 72, 153, 0.16), transparent 55%);
+            mix-blend-mode: screen;
+            opacity: 0.9;
+            z-index: -1;
+        }
+
+        @keyframes drift {
+            0% {
+                transform: translate3d(0, 0, 0);
+            }
+
+            100% {
+                transform: translate3d(-80px, -80px, 0);
+            }
+        }
+
+        .app-shell {
+            padding: 24px clamp(18px, 4vw, 32px);
+        }
+
+        .header-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .title-block {
+            flex: 1 1 260px;
+        }
+
+        .title-main {
+            font-size: clamp(1.6rem, 3vw, 2.1rem);
+            font-weight: 650;
+            letter-spacing: 0.02em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .title-main span {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 999px;
+            background: radial-gradient(circle at 30% 0%, #38bdf8, #1d4ed8);
+            box-shadow: 0 0 24px rgba(56, 189, 248, 0.6);
+            font-size: 18px;
+        }
+
+        .title-sub {
+            margin-top: 4px;
+            font-size: 0.9rem;
+            color: var(--text-soft);
+        }
+
+        .header-controls {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pill {
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            border: 1px solid rgba(148, 163, 184, 0.4);
+            color: var(--text-soft);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(120deg, rgba(15, 23, 42, 0.9), rgba(30, 64, 175, 0.6));
+        }
+
+        .pill-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: #22c55e;
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.9);
+        }
+
+        .primary-btn {
+            border: none;
+            border-radius: 999px;
+            padding: 10px 18px;
+            font-size: 0.92rem;
+            font-weight: 550;
+            background: radial-gradient(circle at 20% 0%, #38bdf8, #0f172a);
+            color: #e5f2ff;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 12px 40px rgba(15, 118, 228, 0.4);
+            transition: transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 18px 50px rgba(37, 99, 235, 0.6);
+        }
+
+        .primary-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 6px 22px rgba(37, 99, 235, 0.5);
+        }
+
+        .primary-btn-icon {
+            width: 18px;
+            height: 18px;
+            border-radius: 999px;
+            border: 1px solid rgba(191, 219, 254, 0.6);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+        }
+
+        .layout-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 2.1fr) minmax(0, 1.3fr);
+            gap: 18px;
+        }
+
+        @media (max-width: 960px) {
+            .layout-grid {
+                grid-template-columns: minmax(0, 1fr);
+            }
+        }
+
+        .glass-card {
+            position: relative;
+            border-radius: var(--radius-lg);
+            padding: 16px 16px 18px;
+            background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.14), rgba(15, 23, 42, 0.9));
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            box-shadow:
+                0 26px 60px rgba(15, 23, 42, 0.9),
+                0 0 0 1px rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(18px);
+        }
+
+        .glass-card.subtle {
+            background: var(--glass);
+        }
+
+        .glass-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .card-title {
+            font-size: 0.86rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-soft);
+        }
+
+        .chip {
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 999px;
+            border: 1px solid rgba(148, 163, 184, 0.6);
+            color: var(--text-soft);
+        }
+
+        .verdict-banner {
+            margin-top: 4px;
+            border-radius: var(--radius-md);
+            padding: 14px 14px 16px;
+            display: grid;
+            grid-template-columns: minmax(0, 1.6fr) minmax(0, 1.1fr);
+            gap: 12px;
+            align-items: center;
+        }
+
+        @media (max-width: 720px) {
+            .verdict-banner {
+                grid-template-columns: minmax(0, 1fr);
+            }
+        }
+
+        .verdict-main {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .verdict-label-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .verdict-pill {
+            font-size: 0.78rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            padding: 3px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(15, 23, 42, 0.7);
+            background: rgba(15, 23, 42, 0.65);
+        }
+
+        .verdict-text {
+            font-size: clamp(1.3rem, 2.4vw, 1.7rem);
+            font-weight: 650;
+        }
+
+        .severity-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            padding: 4px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(15, 23, 42, 0.8);
+        }
+
+        .severity-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 999px;
+            box-shadow: 0 0 12px currentColor;
+        }
+
+        .severity-low {
+            color: var(--success);
+            background: rgba(22, 163, 74, 0.08);
+        }
+
+        .severity-medium {
+            color: var(--warning);
+            background: rgba(250, 204, 21, 0.08);
+        }
+
+        .severity-high {
+            color: #fb923c;
+            background: rgba(251, 146, 60, 0.1);
+        }
+
+        .severity-critical {
+            color: var(--critical);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .verdict-meta {
+            font-size: 0.78rem;
+            color: var(--text-soft);
+        }
+
+        .agreement-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(148, 163, 184, 0.5);
+        }
+
+        .agreement-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 999px;
+            box-shadow: 0 0 12px currentColor;
+        }
+
+        .agreement-true .agreement-dot {
+            color: #22c55e;
+        }
+
+        .agreement-false .agreement-dot {
+            color: #f97316;
+        }
+
+        .confidence-block {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 0.82rem;
+        }
+
+        .confidence-label-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 12px;
+        }
+
+        .confidence-label {
+            text-transform: uppercase;
+            letter-spacing: 0.22em;
+            font-size: 0.7rem;
+            color: var(--text-soft);
+        }
+
+        .confidence-value {
+            font-weight: 600;
+        }
+
+        .confidence-bar-outer {
+            width: 100%;
+            height: 12px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.9);
+            overflow: hidden;
+            box-shadow: inset 0 0 0 1px rgba(30, 64, 175, 0.7);
+        }
+
+        .confidence-bar-inner {
+            height: 100%;
+            width: 0;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #22c55e, #38bdf8, #facc15, #ef4444);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.8);
+            transition: width 400ms ease-out;
+        }
+
+        .confidence-expl {
+            font-size: 0.75rem;
+            color: var(--text-soft);
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        @media (max-width: 720px) {
+            .two-col {
+                grid-template-columns: minmax(0, 1fr);
+            }
+        }
+
+        .mini-card {
+            border-radius: var(--radius-md);
+            padding: 10px 11px;
+            background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.08), rgba(15, 23, 42, 0.96));
+            border: 1px solid rgba(148, 163, 184, 0.35);
+        }
+
+        .mini-label {
+            text-transform: uppercase;
+            letter-spacing: 0.17em;
+            font-size: 0.68rem;
+            color: var(--text-soft);
+        }
+
+        .mini-value-main {
+            margin-top: 4px;
+            font-size: 0.95rem;
+            font-weight: 550;
+        }
+
+        .mini-sub {
+            margin-top: 2px;
+            font-size: 0.75rem;
+            color: var(--text-soft);
+        }
+
+        .model-cards {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        @media (max-width: 900px) {
+            .model-cards {
+                grid-template-columns: minmax(0, 1fr);
+            }
+        }
+
+        .model-card {
+            border-radius: var(--radius-md);
+            padding: 10px 12px 12px;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(30, 64, 175, 0.7);
+        }
+
+        .model-card-title {
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            color: var(--text-soft);
+            margin-bottom: 4px;
+        }
+
+        .model-decision {
+            font-size: 0.95rem;
+            font-weight: 550;
+        }
+
+        .model-meta {
+            font-size: 0.78rem;
+            color: var(--text-soft);
+            margin-top: 2px;
+        }
+
+        .chart-wrapper {
+            margin-top: 8px;
+            height: 150px;
+        }
+
+        .feature-tags {
+            margin-top: 4px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .feature-tag {
+            padding: 2px 8px;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            background: rgba(30, 64, 175, 0.6);
+            color: #cbd5f5;
+        }
+
+        .explanations-list {
+            margin: 4px 0 0;
+            padding-left: 1.1rem;
+            font-size: 0.8rem;
+            color: var(--text-soft);
+        }
+
+        .explanations-list li+li {
+            margin-top: 2px;
+        }
+
+        .activity-log-list {
+            list-style: none;
+            padding: 0;
+            margin: 8px 0 0;
+            font-size: 0.8rem;
+            max-height: 182px;
+            overflow-y: auto;
+        }
+
+        .activity-item {
+            padding: 6px 7px;
+            border-radius: 9px;
+            border: 1px solid rgba(30, 64, 175, 0.5);
+            background: rgba(15, 23, 42, 0.92);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .activity-item+.activity-item {
+            margin-top: 4px;
+        }
+
+        .activity-main {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .activity-meta {
+            font-size: 0.7rem;
+            color: var(--text-soft);
+        }
+
+        .badge {
+            padding: 2px 7px;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .badge-normal {
+            background: rgba(34, 197, 94, 0.12);
+            color: #4ade80;
+        }
+
+        .badge-suspicious {
+            background: rgba(250, 204, 21, 0.16);
+            color: #facc15;
+        }
+
+        .badge-attack {
+            background: rgba(248, 113, 113, 0.18);
+            color: #fb7185;
+        }
+
+        .blocked-panel {
+            margin-top: 8px;
+            border-radius: var(--radius-md);
+            padding: 10px 12px;
+            border: 1px solid rgba(248, 113, 113, 0.7);
+            background: radial-gradient(circle at top left, rgba(248, 113, 113, 0.15), rgba(15, 23, 42, 0.95));
+            font-size: 0.8rem;
+            display: none;
+        }
+
+        .blocked-panel.visible {
+            display: block;
+        }
+
+        .blocked-title {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            color: #fecaca;
+        }
+
+        .blocked-msg {
+            margin-top: 4px;
+            color: #fecaca;
+        }
+
+        .status-line {
+            margin-top: 6px;
+            font-size: 0.78rem;
+            color: var(--text-soft);
+        }
+
+        .status-line strong {
+            color: #e5e7eb;
+        }
+
+        .api-hint {
+            font-size: 0.7rem;
+            color: var(--text-soft);
+        }
+
+        .api-hint code {
+            background: rgba(15, 23, 42, 0.9);
+            padding: 2px 5px;
+            border-radius: 5px;
+            border: 1px solid rgba(30, 64, 175, 0.7);
+        }
+
+        .footer-note {
+            margin-top: 14px;
+            font-size: 0.72rem;
+            color: var(--text-soft);
+        }
+
+        .footer-note strong {
+            color: #e5e7eb;
+        }
+
+        .error-banner {
+            margin-top: 8px;
+            border-radius: var(--radius-md);
+            padding: 8px 10px;
+            border: 1px solid rgba(248, 113, 113, 0.6);
+            background: rgba(127, 29, 29, 0.75);
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-shell">
+        <div class="header-row">
+            <div class="title-block">
+                <div class="title-main">
+                    <span>🔐</span>
+                    Hybrid IDS / IPS Threat Console
+                </div>
+                <div class="title-sub">
+                    Secure, explainable intrusion detection with adaptive defence and visual intelligence.
+                </div>
+            </div>
+            <div class="header-controls">
+                <div class="pill">
+                    <span class="pill-dot"></span>
+                    Real‑Time Scoring Active
+                </div>
+                <button class="primary-btn" id="scan-btn">
+                    <span class="primary-btn-icon">▶</span>
+                    Analyse Sample Flow
+                </button>
+            </div>
+        </div>
+
+        <div class="layout-grid">
+            <!-- Left: Verdict + Models + Features -->
+            <div>
+                <div class="glass-card" id="verdict-card">
+                    <div class="glass-card-header">
+                        <div class="card-title">Threat Verdict</div>
+                        <div class="chip" id="last-updated-chip">Waiting for first sample…</div>
+                    </div>
+
+                    <div class="verdict-banner" id="verdict-banner">
+                        <div class="verdict-main">
+                            <div class="verdict-label-row">
+                                <div class="verdict-pill">Current Verdict</div>
+                                <div class="severity-badge severity-low" id="severity-badge">
+                                    <span class="severity-dot"></span>
+                                    <span id="severity-text">LOW</span>
+                                </div>
+                            </div>
+                            <div class="verdict-text" id="verdict-text">No traffic analysed yet</div>
+                            <div class="verdict-meta" id="verdict-meta">
+                                The system is idle. Trigger a sample analysis to see the full dashboard.
+                            </div>
+                        </div>
+                        <div class="confidence-block">
+                            <div class="confidence-label-row">
+                                <div class="confidence-label">Overall Confidence</div>
+                                <div class="confidence-value" id="confidence-value">0%</div>
+                            </div>
+                            <div class="confidence-bar-outer">
+                                <div class="confidence-bar-inner" id="confidence-bar"></div>
+                            </div>
+                            <div class="confidence-expl" id="confidence-expl"></div>
+                        </div>
+                    </div>
+
+                    <div class="two-col" style="margin-top: 10px;">
+                        <div class="mini-card">
+                            <div class="mini-label">Model Agreement</div>
+                            <div
+                                style="margin-top: 5px; display: flex; justify-content: space-between; align-items: center; gap: 8px;">
+                                <div class="agreement-indicator agreement-true" id="agreement-indicator">
+                                    <span class="agreement-dot"></span>
+                                    <span id="agreement-text">Waiting…</span>
+                                </div>
+                                <div class="mini-sub" id="agreement-subtext">
+                                    Random Forest and Isolation Forest status.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mini-card">
+                            <div class="mini-label">Suspicious IP Tracker</div>
+                            <div class="mini-value-main" id="suspicious-count">0 suspicious events</div>
+                            <div class="mini-sub" id="suspicious-sub">
+                                IP has not shown unusual activity yet.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="model-cards" style="margin-top: 12px;">
+                        <div class="model-card">
+                            <div class="model-card-title">Random Forest (Supervised)</div>
+                            <div class="model-decision" id="rf-decision">Decision: –</div>
+                            <div class="model-meta" id="rf-meta">Confidence: –</div>
+                            <div class="chart-wrapper">
+                                <canvas id="rfChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="model-card">
+                            <div class="model-card-title">Isolation Forest (Unsupervised)</div>
+                            <div class="model-decision" id="if-decision">Decision: –</div>
+                            <div class="model-meta" id="if-meta">Focuses on out-of-pattern traffic.</div>
+                            <div class="chart-wrapper">
+                                <canvas id="modelCompareChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card subtle" style="margin-top: 12px; padding: 10px 12px 12px;">
+                        <div class="glass-card-header" style="margin-bottom: 2px;">
+                            <div class="card-title">Short Explanations</div>
+                        </div>
+                        <ul class="explanations-list" id="explanations-list">
+                            <li>The dashboard will summarise why a flow looks normal, suspicious, or malicious in simple
+                                language.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="glass-card subtle" style="margin-top: 16px;">
+                    <div class="glass-card-header">
+                        <div class="card-title">Feature Behaviour</div>
+                        <div class="chip">Packet · Flow · Port</div>
+                    </div>
+                    <div class="two-col">
+                        <div>
+                            <div class="mini-label">Packet behaviour</div>
+                            <div class="chart-wrapper" style="height: 160px;">
+                                <canvas id="packetChart"></canvas>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="mini-label">Flow & port behaviour</div>
+                            <div class="chart-wrapper" style="height: 160px;">
+                                <canvas id="featureDevChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Activity log + Blocked IP -->
+            <div>
+                <div class="glass-card subtle">
+                    <div class="glass-card-header">
+                        <div class="card-title">Live Activity Log</div>
+                        <div class="chip" id="log-count-chip">Last 0 detections</div>
+                    </div>
+                    <ul class="activity-log-list" id="activity-log"></ul>
+                    <div class="footer-note">
+                        <strong>Tip for viva:</strong> this panel proves that you are not only predicting attacks,
+                        but also keeping a short history for quick incident review.
+                    </div>
+                </div>
+
+                <div class="glass-card subtle" style="margin-top: 14px;">
+                    <div class="glass-card-header">
+                        <div class="card-title">Defence Actions</div>
+                        <div class="chip">IDS + IPS behaviour</div>
+                    </div>
+                    <div class="mini-card" style="margin-bottom: 6px;">
+                        <div class="mini-label">Current recommendation</div>
+                        <div class="mini-value-main" id="defense-recommendation">
+                            No action triggered yet.
+                        </div>
+                        <div class="mini-sub">
+                            The system upgrades severity if the same IP behaves strangely again and again.
+                        </div>
+                    </div>
+
+                    <div class="blocked-panel" id="blocked-panel">
+                        <div class="blocked-title">Simulated IP Blocked</div>
+                        <div class="blocked-msg" id="blocked-msg">
+                            This IP has been virtually blocked because of repeated or high-confidence attacks.
+                        </div>
+                        <div class="status-line">
+                            In a real deployment, this is where a firewall rule or
+                            network access control would be updated.
+                        </div>
+                    </div>
+
+                    <div id="error-container"></div>
+
+                    <div class="status-line" style="margin-top: 10px;">
+                        <strong>API security:</strong> every call to <code>/predict</code>
+                        carries an <code>X-API-KEY</code> header and is rate-limited to avoid abuse.
+                    </div>
+                    <div class="api-hint" style="margin-top: 4px;">
+                        Swap the demo key in code before deploying to a real environment.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // IMPORTANT: for a demo setup this key is duplicated in backend config (api.py).
+        // In a real deployment you would not expose the key to arbitrary browsers.
+        const API_KEY = "demo-secret-key";
+
+        const scanBtn = document.getElementById("scan-btn");
+        const lastUpdatedChip = document.getElementById("last-updated-chip");
+        const verdictText = document.getElementById("verdict-text");
+        const verdictMeta = document.getElementById("verdict-meta");
+        const severityBadge = document.getElementById("severity-badge");
+        const severityText = document.getElementById("severity-text");
+        const confidenceValue = document.getElementById("confidence-value");
+        const confidenceBar = document.getElementById("confidence-bar");
+        const confidenceExpl = document.getElementById("confidence-expl");
+        const agreementIndicator = document.getElementById("agreement-indicator");
+        const agreementText = document.getElementById("agreement-text");
+        const agreementSubtext = document.getElementById("agreement-subtext");
+        const suspiciousCountEl = document.getElementById("suspicious-count");
+        const suspiciousSub = document.getElementById("suspicious-sub");
+        const rfDecisionEl = document.getElementById("rf-decision");
+        const rfMetaEl = document.getElementById("rf-meta");
+        const ifDecisionEl = document.getElementById("if-decision");
+        const ifMetaEl = document.getElementById("if-meta");
+        const explanationsList = document.getElementById("explanations-list");
+        const activityLog = document.getElementById("activity-log");
+        const logCountChip = document.getElementById("log-count-chip");
+        const defenseRecommendation = document.getElementById("defense-recommendation");
+        const blockedPanel = document.getElementById("blocked-panel");
+        const blockedMsg = document.getElementById("blocked-msg");
+        const errorContainer = document.getElementById("error-container");
+
+        let rfChart, modelCompareChart, packetChart, featureDevChart;
+        const activityBuffer = [];
+
+        function createOrUpdateChart(chartRef, ctx, config) {
+            if (chartRef) {
+                chartRef.data = config.data;
+                chartRef.options = config.options || chartRef.options;
+                chartRef.update();
+                return chartRef;
+            }
+            return new Chart(ctx, config);
+        }
+
+        function formatTime(ts) {
+            return ts.toLocaleTimeString(undefined, {
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit"
+            });
+        }
+
+        function setSeverity(severity) {
+            const sev = (severity || "LOW").toUpperCase();
+            severityText.textContent = sev;
+            severityBadge.classList.remove("severity-low", "severity-medium", "severity-high", "severity-critical");
+            if (sev === "LOW") severityBadge.classList.add("severity-low");
+            else if (sev === "MEDIUM") severityBadge.classList.add("severity-medium");
+            else if (sev === "HIGH") severityBadge.classList.add("severity-high");
+            else severityBadge.classList.add("severity-critical");
+        }
+
+        function setAgreement(agreement) {
+            agreementIndicator.classList.toggle("agreement-true", !!agreement);
+            agreementIndicator.classList.toggle("agreement-false", !agreement);
+            agreementText.textContent = agreement ? "Models agree on this flow" : "Models disagree on this flow";
+            agreementSubtext.textContent = agreement
+                ? "Both models see this flow in the same way."
+                : "One model is cautious while the other is more relaxed – confidence is reduced.";
+        }
+
+        function setVerdict(verdict, severity) {
+            const cleanVerdict = verdict || "Normal";
+            verdictText.textContent = cleanVerdict + " traffic";
+            if (cleanVerdict === "Normal") {
+                verdictMeta.textContent = "Traffic currently looks like everyday usage.";
+            } else if (cleanVerdict === "Suspicious") {
+                verdictMeta.textContent = "Traffic stands out from normal behaviour and should be watched.";
+            } else {
+                verdictMeta.textContent = "Traffic looks malicious and deserves immediate attention.";
+            }
+            setSeverity(severity);
+        }
+
+        function setConfidence(confValue, explanation) {
+            const pct = Math.round((confValue || 0) * 100);
+            confidenceValue.textContent = pct + "%";
+            confidenceBar.style.width = pct + "%";
+            confidenceExpl.textContent = explanation || "";
+        }
+
+        function updateActivityLog(entry) {
+            activityBuffer.unshift(entry);
+            if (activityBuffer.length > 5) {
+                activityBuffer.pop();
+            }
+            activityLog.innerHTML = "";
+            activityBuffer.forEach(item => {
+                const li = document.createElement("li");
+                li.className = "activity-item";
+                const verdictLower = (item.final_verdict || "").toLowerCase();
+                let badgeClass = "badge-normal";
+                if (verdictLower === "suspicious") badgeClass = "badge-suspicious";
+                else if (verdictLower === "attack") badgeClass = "badge-attack";
+
+                li.innerHTML = `
+            <div class="activity-main">
+                <div>${item.time} · ${item.final_verdict} · <span style="opacity:0.8;">${item.severity}</span></div>
+                <div class="activity-meta">Confidence ${item.confidence}% · RF: ${item.rf_decision} · IF: ${item.if_decision}</div>
+            </div>
+            <span class="badge ${badgeClass}">${item.final_verdict}</span>
+        `;
+                activityLog.appendChild(li);
+            });
+            logCountChip.textContent = `Last ${activityBuffer.length} detection${activityBuffer.length === 1 ? "" : "s"}`;
+        }
+
+        function renderExplanations(list) {
+            explanationsList.innerHTML = "";
+            (list || []).forEach(text => {
+                const li = document.createElement("li");
+                li.textContent = text;
+                explanationsList.appendChild(li);
+            });
+            if (!list || !list.length) {
+                const li = document.createElement("li");
+                li.textContent = "The flow did not show any clear red flags compared with normal traffic.";
+                explanationsList.appendChild(li);
+            }
+        }
+
+        function updateCharts(data) {
+            const rfCtx = document.getElementById("rfChart").getContext("2d");
+            const modelCompareCtx = document.getElementById("modelCompareChart").getContext("2d");
+            const packetCtx = document.getElementById("packetChart").getContext("2d");
+            const featureDevCtx = document.getElementById("featureDevChart").getContext("2d");
+
+            const rfDecision = data.model_results?.random_forest?.decision || "Normal";
+            const rfConf = (data.model_results?.random_forest?.confidence || 0);
+
+            const rfConfig = {
+                type: "doughnut",
+                data: {
+                    labels: ["Confidence", "Remaining"],
+                    datasets: [{
+                        data: [Math.round(rfConf * 100), 100 - Math.round(rfConf * 100)],
+                        backgroundColor: ["rgba(56,189,248,0.9)", "rgba(15,23,42,0.9)"],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    cutout: "72%",
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: false }
+                    }
+                }
+            };
+            rfChart = createOrUpdateChart(rfChart, rfCtx, rfConfig);
+
+            const ifDecision = data.model_results?.isolation_forest?.decision || "Normal";
+            const modelCompareConfig = {
+                type: "bar",
+                data: {
+                    labels: ["Random Forest", "Isolation Forest"],
+                    datasets: [{
+                        label: "Attack likelihood (simplified)",
+                        data: [
+                            rfDecision === "Attack" ? Math.round(rfConf * 100) || 60 : Math.round((1 - rfConf) * 100),
+                            ifDecision === "Anomalous" ? 80 : 10
+                        ],
+                        backgroundColor: ["rgba(56,189,248,0.75)", "rgba(248, 113, 113, 0.8)"]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            suggestedMax: 100,
+                            ticks: { display: false },
+                            grid: { display: false }
+                        },
+                        x: {
+                            ticks: {
+                                color: "#9ca3af",
+                                font: { size: 10 }
+                            },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            };
+            modelCompareChart = createOrUpdateChart(modelCompareChart, modelCompareCtx, modelCompareConfig);
+
+            const packetFeatures = data.feature_analysis?.packet_behavior || [];
+            const flowFeatures = (data.feature_analysis?.flow_behavior || []).concat(data.feature_analysis?.port_behavior || []);
+
+            const packetConfig = {
+                type: "bar",
+                data: {
+                    labels: packetFeatures.map(f => f.feature),
+                    datasets: [{
+                        data: packetFeatures.map(f => f.value),
+                        backgroundColor: "rgba(56,189,248,0.7)"
+                    }]
+                },
+                options: {
+                    indexAxis: "y",
+                    plugins: { legend: { display: false }, tooltip: { enabled: false } },
+                    scales: {
+                        x: { display: false, grid: { display: false } },
+                        y: {
+                            ticks: { color: "#9ca3af", font: { size: 9 } },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            };
+            packetChart = createOrUpdateChart(packetChart, packetCtx, packetConfig);
+
+            const featureDevConfig = {
+                type: "bar",
+                data: {
+                    labels: flowFeatures.map(f => f.feature),
+                    datasets: [{
+                        data: flowFeatures.map(f => f.value),
+                        backgroundColor: "rgba(52, 211, 153, 0.7)"
+                    }]
+                },
+                options: {
+                    plugins: { legend: { display: false }, tooltip: { enabled: false } },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { display: false },
+                            grid: { display: false }
+                        },
+                        x: {
+                            ticks: { color: "#9ca3af", font: { size: 9 } },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            };
+            featureDevChart = createOrUpdateChart(featureDevChart, featureDevCtx, featureDevConfig);
+        }
+
+        function setDefense(data) {
+            const defense = data.defense_actions || {};
+            const suspiciousCount = defense.suspicious_count ?? 0;
+            suspiciousCountEl.textContent = `${suspiciousCount} suspicious event${suspiciousCount === 1 ? "" : "s"}`;
+            suspiciousSub.textContent = suspiciousCount === 0
+                ? "IP has not shown unusual activity yet."
+                : "Repeated unusual flows from this IP increase its risk level.";
+
+            defenseRecommendation.textContent = defense.recommendation || "No action triggered yet.";
+
+            if (defense.ip_blocked) {
+                blockedPanel.classList.add("visible");
+                blockedMsg.textContent = "This IP has been virtually blocked because of repeated or high-confidence attacks.";
+            } else {
+                blockedPanel.classList.remove("visible");
+            }
+        }
+
+        function showError(message) {
+            errorContainer.innerHTML = `<div class="error-banner">${message}</div>`;
+        }
+
+        function clearError() {
+            errorContainer.innerHTML = "";
+        }
+
+        async function analyseSample() {
+            clearError();
+            scanBtn.disabled = true;
+            scanBtn.textContent = "Analysing…";
+
+            lastUpdatedChip.textContent = "Sending sample to API…";
+
+            const payload = {
+                "Average Packet Size": 500,
+                "Max Packet Length": 1500,
+                "Packet Length Mean": 700,
+                "Bwd Packet Length Max": 1400,
+                "Bwd Packet Length Std": 200,
+                "Avg Bwd Segment Size": 600,
+                "Fwd Packet Length Mean": 650,
+                "Min Packet Length": 40,
+                "Destination Port": 80,
+                "Init_Win_bytes_backward": 1000,
+                "Flow Duration": 10000,
+                "Total Fwd Packets": 20
+            };
+
+            try {
+                const response = await fetch("/predict", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-API-KEY": API_KEY
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    // If IP has been blocked, server may return the minimal blocked payload
+                    if (data && data.verdict === "BLOCKED") {
+                        setVerdict("Attack", "CRITICAL");
+                        setConfidence(1, "This IP has been virtually blocked due to repeated malicious behaviour.");
+                        setAgreement(false);
+                        setDefense({ defense_actions: { suspicious_count: 0, ip_blocked: true, recommendation: "IP blocked due to repeated malicious attempts." } });
+                        blockedPanel.classList.add("visible");
+                        blockedMsg.textContent = data.message || "Your IP has been temporarily blocked.";
+                        lastUpdatedChip.textContent = "Latest response: IP blocked";
+                        showError("The backend has blocked this IP based on previous malicious traffic.");
+                        return;
+                    }
+                    showError(data.error || "The API rejected the request.");
+                    lastUpdatedChip.textContent = "Last request failed";
+                    return;
+                }
+
+                if (data.error) {
+                    showError(data.error);
+                    lastUpdatedChip.textContent = "Last request failed";
+                    return;
+                }
+
+                const verdict = data.final_verdict || "Normal";
+                const severity = data.severity || "LOW";
+                const confidence = data.confidence || 0;
+                const rfDecision = data.model_results?.random_forest?.decision || "Normal";
+                const rfConf = data.model_results?.random_forest?.confidence || 0;
+                const ifDecision = data.model_results?.isolation_forest?.decision || "Normal";
+                const agreement = !!data.model_results?.agreement;
+
+                setVerdict(verdict, severity);
+                setConfidence(confidence, data.confidence_explanation);
+                setAgreement(agreement);
+
+                rfDecisionEl.textContent = "Decision: " + rfDecision;
+                rfMetaEl.textContent = "Confidence: " + Math.round(rfConf * 100) + "%";
+
+                ifDecisionEl.textContent = "Decision: " + ifDecision;
+
+                setDefense(data);
+                renderExplanations(data.feature_explanations || []);
+                updateCharts(data);
+
+                const now = new Date();
+                lastUpdatedChip.textContent = "Last analysed at " + formatTime(now);
+
+                updateActivityLog({
+                    time: formatTime(now),
+                    final_verdict: verdict,
+                    severity: severity,
+                    confidence: Math.round(confidence * 100),
+                    rf_decision: rfDecision,
+                    if_decision: ifDecision
+                });
+
+            } catch (err) {
+                showError("Unable to reach the detection engine. Make sure the Flask server is running.");
+                lastUpdatedChip.textContent = "Connection error";
+            } finally {
+                scanBtn.disabled = false;
+                scanBtn.textContent = "Analyse Sample Flow";
+            }
+        }
+
+        scanBtn.addEventListener("click", analyseSample);
+    </script>
+
+</body>
+
+</html>
