@@ -1,78 +1,114 @@
-\# AI-Based Intrusion Detection System (AI-IDS)
+    Overview
 
+AI_IDS is a hybrid Intrusion Detection System (IDS) with adaptive Intrusion Prevention (IPS) capabilities. It combines supervised and unsupervised machine learning models to detect known attacks and anomalous network behavior in real time.
 
+The system includes confidence-aware model agreement, explainable decision output, rate limiting, and automatic IP escalation and blocking.
 
-\## 📌 Overview
+    Key Features
 
-This project implements a hybrid AI-based Intrusion Detection System (IDS) that combines supervised learning and anomaly detection to identify both known and unknown network attacks.
+-Hybrid detection using Random Forest and Isolation Forest
 
+-Confidence scoring with disagreement adjustment
 
+-Per-IP suspicious activity tracking
 
-\## 🚀 Key Features
+-Automatic escalation and IP blocking logic
 
-\- Random Forest classifier for detecting known attacks
+-Structured explainability with feature grouping
 
-\- Isolation Forest for anomaly and zero-day attack detection
+-Real-time interactive dashboard
 
-\- Feature importance analysis for explainability
+-Rate limiting and API key authentication
 
-\- Trained on NSL-KDD dataset
+-Modular Flask backend architecture
 
+    Architecture
 
+-Detection Layer
 
-\## 🧠 Datasets Used
+  Random Forest for supervised attack classification
 
-\- NSL-KDD (baseline intrusion detection dataset)
+  Isolation Forest for anomaly detection
 
-\- CICIDS2017 (to be integrated for modern attack patterns)
+  Model agreement logic with confidence adjustment
 
+-Defense Layer
 
+  Suspicious count tracking per IP
 
-\## 🛠️ Technologies
+  Escalation thresholds for repeated anomalies
 
-\- Python
+  Automatic blocking under high-risk conditions
 
-\- Scikit-learn
+-Explainability Layer
 
-\- Pandas, NumPy
+  Plain-language reasoning
 
-\- Git \& GitHub
+  Feature behavior grouping (packet, flow, port)
 
+  Structured JSON output for UI integration
 
+    Technology Stack
 
-\## 📂 Project Structure
+-Backend
 
-AI-IDS/
+  Python
 
-├── data/
+  Flask
 
-├── src/
+  scikit-learn
 
-├── models/
+  joblib
 
-├── docs/
+-Frontend
 
-├── README.md
+  HTML
 
-└── requirements.txt
+  CSS
 
+  Vanilla JavaScript
 
+  Chart.js
 
-\## 📈 Future Work
+    API Endpoint
 
-\- Integration of CICIDS2017 dataset
+POST /predict
 
-\- FastAPI backend for real-time detection
+Authentication via X-API-KEY header.
+Returns structured detection result including:
 
-\- Frontend dashboard for visualization
+-Final verdict
 
-\- Model optimization for real-world traffic
+-Severity level
 
+-Confidence score
 
+-Model agreement
 
-\## 👨‍💻 Author
+-Defense actions
 
-Advika Ainapure
+-Feature-based explanations
 
+    Running the Project
 
+-Install dependencies:
 
+  pip install -r requirements.txt
+
+-Run the backend:
+
+  python src/api.py
+
+-Access dashboard:
+
+  http://127.0.0.1:5000/
+  
+    Highlights
+
+-Combines supervised and unsupervised ML in a unified detection pipeline
+
+-Implements adaptive security response logic beyond basic classification
+
+Integrates explainability directly into real-time threat reporting
+
+Designed with modular, production-aware backend structure
