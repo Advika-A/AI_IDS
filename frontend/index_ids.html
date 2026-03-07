@@ -771,10 +771,6 @@
                         <div class="chip" id="log-count-chip">Last 0 detections</div>
                     </div>
                     <ul class="activity-log-list" id="activity-log"></ul>
-                    <div class="footer-note">
-                        <strong>Tip for viva:</strong> this panel proves that you are not only predicting attacks,
-                        but also keeping a short history for quick incident review.
-                    </div>
                 </div>
 
                 <div class="glass-card subtle" style="margin-top: 14px;">
@@ -1099,7 +1095,8 @@
 
             lastUpdatedChip.textContent = "Sending sample to API…";
 
-            const payload = {
+            /* Normal Traffic */
+            /*const payload = {
                 "Average Packet Size": 500,
                 "Max Packet Length": 1500,
                 "Packet Length Mean": 700,
@@ -1112,6 +1109,22 @@
                 "Init_Win_bytes_backward": 1000,
                 "Flow Duration": 10000,
                 "Total Fwd Packets": 20
+            };*/
+
+            /* Malicious Traffic */
+            const payload = {
+                "Average Packet Size": 2500,
+                "Max Packet Length": 5000,
+                "Packet Length Mean": 3000,
+                "Bwd Packet Length Max": 4800,
+                "Bwd Packet Length Std": 1200,
+                "Avg Bwd Segment Size": 2000,
+                "Fwd Packet Length Mean": 2800,
+                "Min Packet Length": 1,
+                "Destination Port": 4444,
+                "Init_Win_bytes_backward": 800000,
+                "Flow Duration": 25000000,
+                "Total Fwd Packets": 15000
             };
 
             try {

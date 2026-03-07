@@ -10,3 +10,82 @@
 2026-03-01 20:36:02 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.710 if_decision=Normal agreement=yes final_verdict=Normal severity=LOW suspicious_count=0 ip_blocked=False
 2026-03-01 20:38:57 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.710 if_decision=Normal agreement=yes final_verdict=Normal severity=LOW suspicious_count=0 ip_blocked=False
 2026-03-02 11:09:04 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.710 if_decision=Normal agreement=yes final_verdict=Normal severity=LOW suspicious_count=0 ip_blocked=False
+2026-03-02 11:18:51 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.710 if_decision=Normal agreement=yes final_verdict=Normal severity=LOW suspicious_count=0 ip_blocked=False
+2026-03-02 12:01:53 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.710 if_decision=Normal agreement=yes final_verdict=Normal severity=LOW suspicious_count=0 ip_blocked=False
+2026-03-02 12:02:10 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.710 if_decision=Normal agreement=yes final_verdict=Normal severity=LOW suspicious_count=0 ip_blocked=False
+2026-03-03 10:56:09 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.710 if_decision=Normal agreement=yes final_verdict=Normal severity=LOW suspicious_count=0 ip_blocked=False
+2026-03-03 11:00:56 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.710 if_decision=Normal agreement=yes final_verdict=Normal severity=LOW suspicious_count=0 ip_blocked=False
+2026-03-03 11:26:05 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.730 if_decision=Anomalous agreement=no final_verdict=Suspicious severity=MEDIUM suspicious_count=1 ip_blocked=False
+2026-03-03 11:31:14 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.730 if_decision=Anomalous agreement=no final_verdict=Suspicious severity=MEDIUM suspicious_count=2 ip_blocked=False
+2026-03-03 11:31:15 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.730 if_decision=Anomalous agreement=no final_verdict=Attack severity=HIGH suspicious_count=3 ip_blocked=False
+2026-03-03 11:31:16 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.730 if_decision=Anomalous agreement=no final_verdict=Attack severity=HIGH suspicious_count=4 ip_blocked=False
+2026-03-03 11:31:17 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.730 if_decision=Anomalous agreement=no final_verdict=Attack severity=CRITICAL suspicious_count=5 ip_blocked=True
+2026-03-03 11:31:18 - WARNING - Blocked IP attempted access - ip=127.0.0.1
+2026-03-03 11:31:29 - WARNING - Blocked IP attempted access - ip=127.0.0.1
+2026-03-03 11:31:30 - WARNING - Blocked IP attempted access - ip=127.0.0.1
+2026-03-03 11:31:31 - WARNING - Blocked IP attempted access - ip=127.0.0.1
+2026-03-03 11:31:31 - WARNING - Blocked IP attempted access - ip=127.0.0.1
+2026-03-03 11:31:31 - WARNING - Blocked IP attempted access - ip=127.0.0.1
+2026-03-03 11:31:32 - WARNING - Blocked IP attempted access - ip=127.0.0.1
+2026-03-03 11:31:32 - WARNING - Blocked IP attempted access - ip=127.0.0.1
+2026-03-03 11:31:33 - WARNING - Blocked IP attempted access - ip=127.0.0.1
+2026-03-03 11:31:33 - WARNING - Blocked IP attempted access - ip=127.0.0.1
+2026-03-03 11:32:26 - WARNING - Blocked IP attempted access - ip=127.0.0.1
+2026-03-03 11:32:29 - WARNING - Blocked IP attempted access - ip=127.0.0.1
+2026-03-03 11:32:31 - WARNING - Blocked IP attempted access - ip=127.0.0.1
+2026-03-03 11:32:31 - WARNING - Blocked IP attempted access - ip=127.0.0.1
+2026-03-03 11:32:32 - WARNING - Blocked IP attempted access - ip=127.0.0.1
+2026-03-03 11:32:32 - WARNING - Blocked IP attempted access - ip=127.0.0.1
+2026-03-03 11:32:32 - WARNING - Blocked IP attempted access - ip=127.0.0.1
+2026-03-03 11:32:32 - WARNING - Blocked IP attempted access - ip=127.0.0.1
+2026-03-03 11:32:33 - WARNING - Blocked IP attempted access - ip=127.0.0.1
+2026-03-03 11:32:33 - WARNING - Blocked IP attempted access - ip=127.0.0.1
+2026-03-03 11:32:33 - WARNING - Blocked IP attempted access - ip=127.0.0.1
+2026-03-03 11:32:33 - WARNING - Blocked IP attempted access - ip=127.0.0.1
+2026-03-03 11:32:33 - WARNING - Blocked IP attempted access - ip=127.0.0.1
+2026-03-03 11:40:11 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.710 if_decision=Normal agreement=yes final_verdict=Normal severity=LOW suspicious_count=0 ip_blocked=False
+2026-03-03 11:40:40 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.710 if_decision=Normal agreement=yes final_verdict=Normal severity=LOW suspicious_count=0 ip_blocked=False
+2026-03-03 11:40:43 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.710 if_decision=Normal agreement=yes final_verdict=Normal severity=LOW suspicious_count=0 ip_blocked=False
+2026-03-03 11:40:47 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.730 if_decision=Anomalous agreement=no final_verdict=Suspicious severity=MEDIUM suspicious_count=1 ip_blocked=False
+2026-03-03 11:40:50 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.730 if_decision=Anomalous agreement=no final_verdict=Suspicious severity=MEDIUM suspicious_count=2 ip_blocked=False
+2026-03-03 11:40:51 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.730 if_decision=Anomalous agreement=no final_verdict=Attack severity=HIGH suspicious_count=3 ip_blocked=False
+2026-03-03 11:40:51 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.730 if_decision=Anomalous agreement=no final_verdict=Attack severity=HIGH suspicious_count=4 ip_blocked=False
+2026-03-03 11:40:52 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.730 if_decision=Anomalous agreement=no final_verdict=Attack severity=CRITICAL suspicious_count=5 ip_blocked=True
+2026-03-03 11:41:59 - WARNING - Blocked IP attempted access - ip=127.0.0.1
+2026-03-03 11:42:00 - WARNING - Blocked IP attempted access - ip=127.0.0.1
+2026-03-03 11:42:01 - WARNING - Blocked IP attempted access - ip=127.0.0.1
+2026-03-03 11:42:01 - WARNING - Blocked IP attempted access - ip=127.0.0.1
+2026-03-03 13:19:49 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.710 if_decision=Normal agreement=yes final_verdict=Normal severity=LOW suspicious_count=0 ip_blocked=False
+2026-03-03 13:20:00 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.710 if_decision=Normal agreement=yes final_verdict=Normal severity=LOW suspicious_count=0 ip_blocked=False
+2026-03-03 13:23:32 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.730 if_decision=Anomalous agreement=no final_verdict=Suspicious severity=MEDIUM suspicious_count=1 ip_blocked=False
+2026-03-03 13:23:35 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.730 if_decision=Anomalous agreement=no final_verdict=Suspicious severity=MEDIUM suspicious_count=2 ip_blocked=False
+2026-03-03 13:23:36 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.730 if_decision=Anomalous agreement=no final_verdict=Attack severity=HIGH suspicious_count=3 ip_blocked=False
+2026-03-03 13:23:37 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.730 if_decision=Anomalous agreement=no final_verdict=Attack severity=HIGH suspicious_count=4 ip_blocked=False
+2026-03-03 13:48:56 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.730 if_decision=Anomalous agreement=no final_verdict=Suspicious severity=MEDIUM suspicious_count=1 ip_blocked=False
+2026-03-03 13:49:27 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.710 if_decision=Normal agreement=yes final_verdict=Normal severity=LOW suspicious_count=1 ip_blocked=False
+2026-03-03 13:50:07 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.730 if_decision=Anomalous agreement=no final_verdict=Suspicious severity=MEDIUM suspicious_count=2 ip_blocked=False
+2026-03-03 13:50:10 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.730 if_decision=Anomalous agreement=no final_verdict=Attack severity=HIGH suspicious_count=3 ip_blocked=False
+2026-03-03 13:50:11 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.730 if_decision=Anomalous agreement=no final_verdict=Attack severity=HIGH suspicious_count=4 ip_blocked=False
+2026-03-03 13:50:32 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.730 if_decision=Anomalous agreement=no final_verdict=Attack severity=CRITICAL suspicious_count=5 ip_blocked=True
+2026-03-06 17:43:59 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.730 if_decision=Anomalous agreement=no final_verdict=Suspicious severity=MEDIUM suspicious_count=1 ip_blocked=False
+2026-03-06 17:48:39 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.710 if_decision=Normal agreement=yes final_verdict=Normal severity=LOW suspicious_count=1 ip_blocked=False
+2026-03-06 17:50:03 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.710 if_decision=Normal agreement=yes final_verdict=Normal severity=LOW suspicious_count=1 ip_blocked=False
+2026-03-06 17:50:29 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.730 if_decision=Anomalous agreement=no final_verdict=Suspicious severity=MEDIUM suspicious_count=2 ip_blocked=False
+2026-03-06 17:50:37 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.730 if_decision=Anomalous agreement=no final_verdict=Attack severity=HIGH suspicious_count=3 ip_blocked=False
+2026-03-06 17:50:38 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.730 if_decision=Anomalous agreement=no final_verdict=Attack severity=HIGH suspicious_count=4 ip_blocked=False
+2026-03-06 17:50:39 - INFO - ip=127.0.0.1 rf_decision=Normal rf_conf=0.730 if_decision=Anomalous agreement=no final_verdict=Attack severity=CRITICAL suspicious_count=5 ip_blocked=True
+2026-03-06 17:50:56 - WARNING - Blocked IP attempted access - ip=127.0.0.1
+2026-03-06 17:51:18 - WARNING - Blocked IP attempted access - ip=127.0.0.1
+2026-03-06 17:51:19 - WARNING - Blocked IP attempted access - ip=127.0.0.1
+2026-03-06 17:51:22 - WARNING - Blocked IP attempted access - ip=127.0.0.1
+2026-03-06 17:51:22 - WARNING - Blocked IP attempted access - ip=127.0.0.1
+2026-03-06 17:51:23 - WARNING - Blocked IP attempted access - ip=127.0.0.1
+2026-03-06 17:51:23 - WARNING - Blocked IP attempted access - ip=127.0.0.1
+2026-03-06 17:51:23 - WARNING - Blocked IP attempted access - ip=127.0.0.1
+2026-03-06 17:51:23 - WARNING - Blocked IP attempted access - ip=127.0.0.1
+2026-03-06 17:51:23 - WARNING - Blocked IP attempted access - ip=127.0.0.1
+2026-03-06 17:51:24 - WARNING - Blocked IP attempted access - ip=127.0.0.1
+2026-03-06 17:51:24 - WARNING - Blocked IP attempted access - ip=127.0.0.1
+2026-03-06 17:51:24 - WARNING - Blocked IP attempted access - ip=127.0.0.1
+2026-03-06 17:51:24 - WARNING - Blocked IP attempted access - ip=127.0.0.1
+2026-03-06 17:51:24 - WARNING - Blocked IP attempted access - ip=127.0.0.1
