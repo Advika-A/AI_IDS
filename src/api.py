@@ -7,9 +7,9 @@ from flask_cors import CORS
 import joblib
 import numpy as np
 
-from security import require_api_key, apply_rate_limit, get_client_ip
-from defense import defense_manager
-from explainability import (
+from src.security import require_api_key, apply_rate_limit, get_client_ip
+from src.defense import defense_manager
+from src.explainability import (
     generate_simple_explanations,
     group_features_for_dashboard,
     adjust_confidence_for_disagreement,
