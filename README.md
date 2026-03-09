@@ -112,3 +112,6 @@ Returns structured detection result including:
 Integrates explainability directly into real-time threat reporting
 
 Designed with modular, production-aware backend structure
+
+        Live Demo
+https://ai-ids-azms.onrender.com
